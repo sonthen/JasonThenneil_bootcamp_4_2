@@ -19,32 +19,28 @@ class CourseController extends Controller
             
 
             $this->validate($request, [
+                'id' => 'integer',
                 'name' => 'required',
                 'gender' => 'required',
                 'email'=> 'required|email'
             ]);
-
+            $id = $request->input('id');//optional untuk di input, jika di input dan inputan cocok dengan ID yang telah ada, maka akan data ID tersebut akan terupdate sesuai data2 terinput
             $name = $request->input('name');
             $gender = $request->input('gender');
             $birth_date = $request->input('birth_date');
             $phone = $request->input('phone');
             $email = $request->input('email');
             
-
-            //save ke database(eloquent)
-
-            $stu = new student;
-            $stu->name = $name;
-            $stu->gender = $gender;
-            $stu->birth_date = $birth_date;
-            $stu->phone = $phone;
-            $stu->email = $email;
             
-            $stu->save();
+            $stu = App\student::updateOrCreate(
+                ['id' => $id],
+                ['name' => $name,'gender' => $gender,'birth_date' => $birth_date,'phone' => $phone,'email' => $email,]
+            );
+            DB::commit();
 
             $Student= student::get();
-            //temannya beginTransaction(); untuk commit data
-            DB::commit();
+            
+            
             return response()->json($Student, 201);
         }
         catch(\Exception $e){
@@ -66,7 +62,7 @@ class CourseController extends Controller
             
 
             $this->validate($request, [
-                'id' => 'required',
+                
                 'name' => 'required',
                 'gender' => 'required',
                 'email'=> 'required|email'
@@ -84,7 +80,7 @@ class CourseController extends Controller
             // $p = product::where ('id','=','1')->first();
             // $p->name="newprodedited";
             // $p->save();
-            $stu = student::where ('id','=',$id->first();
+            $stu = student::where ('id','=',$id->first());
             $stu->name = $name;
             $stu->gender = $gender;
             $stu->birth_date = $birth_date;
